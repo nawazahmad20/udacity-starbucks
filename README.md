@@ -4,25 +4,23 @@ Project in Data Scientist Nanodegree of Udacity
 ### Table of Contents
 
 1. [Domain Background](#domain_background)
-2. [Project Motivation](#motivation)
-3. [File Descriptions](#files)
-4. [Results](#results)
-5. [Licensing, Authors, and Acknowledgements](#licensing)
+2. [Problem Statement](#problem_statement)
+3. [Datasets and Inputs](#inputs)
+4. [Solution Statement / Project Design](#solution)
+5. [Benchmark Model](#benchmark)
+6. [Evaluation Metrics](#evaluation)
 
 ## Domain Background <a name="domain_background"></a>
 
-There should be no necessary libraries to run the code here beyond the Anaconda distribution of Python.  The code should run with no issues using Python versions 3.*.
+In general terms, the problem is to boost the sales of a company by providing offers to the customers. There are multiple answers that have to be answered using data science to fully understand the impact of the offers on the sale. Some of them are listed below:-
+1.	Identify whether to provide offer to a customer- This is relevant because if you provide offer to customers who were anyways going to purchase the product, we would end up decreasing the overall profit margin. On the other hand, if we miss out on targeting the customers that would have purchased had we given them the offer, we would miss out on sales and in long term may end up losing customers as well to a rival brands.
+2.	Identify which offer is to suitable to which customer- Once we are sure that an offer is to be given to a customer, we must find out which offer is better suitable or eye catching to a customer. As it is well known that BOGO and 50% discount, although having same monetary value can sometimes have different impact on sales. 
+3.	Identify the overall impact of the offers – It is very necessary to calculate the actual impact of the offers on the sales and in turn identify whether giving offers make sense to the business. In order to calculate the actual boost in sales, we should not only look at the sales for the weeks where the offer was active, but we should also have a look at the subsequent weeks to understand the stocking and competitor effect. This may not be relevant to the Starbucks problem we are solving, but can have serious implications for other similar problems
 
-## Project Motivation<a name="motivation"></a>
+## Problem Statement <a name="problem_statement"></a>
+After having a look at the Starbucks dataset, it is not very clear if the offers were given as a reward to loyal customers or to reengage customers who have gone dormant. I am assuming it is latter instead of the former, as this can change the way problem is to be approached. As mentioned above there can be multiple use cases built out of this particular dataset, however, I would like to focus on the first use case mentioned above. The objective is to analyze customer demographic and transactional data to find out if the customer made purchase because of the offer or he was anyways going to purchase the items. This in turn will help us decide whether to give offer to a customer. 
 
-It is the Starbuck's Capstone Challenge of the Data Scientist Nanodegree in Udacity. We get the dataset from the program that creates the data simulates how people make purchasing decisions and how those decisions are influenced by promotional offers. We want to make a recommendation engine that recommends Starbucks which offer should be sent to a particular customer.
-
-We are interested to answer the following two questions:
-1. Which offer should be sent to a particular customer to let the customer buy more?
-2. Which demographic groups respond best to which offer type?
-
-
-## File Descriptions <a name="files"></a>
+## Datasets and Inputs <a name="inputs"></a>
 
 The notebook available here showcases work related to the above questions.  
 
@@ -57,16 +55,17 @@ Here is the schema and explanation of each variable in the files:
 - value - (dict of strings) - either an offer id or transaction amount depending on the record
 
 
-## Results<a name="results"></a>
+## Solution Statement / Project Design<a name="solution"></a>
 
-The main findings of the code can be found at the post available [here](https://medium.com/@joshua.chyeung/send-out-a-starbucks-offer-that-you-cannot-resist-2d4d7d18b417).
+TIn order to find out if the customer:-
+1.	We are going to focus only on the customers that were provided with offer and also availed the offer. 
+2.	The customers who availed the offer but didn’t viewed the offer would be considered as the customers to whom offer should not have been given. This is because their purchasing behavior was not influenced by the offer. 
+3.	The customers who availed the offer and also viewed the offer would be considered as the customers to whom offer should have been given. Note that I am assuming here that the reason of transaction for these customers is offer and they would not have made the purchase had the offer not given. 
+4.	For each of the customers, demographic information is directly available. We would have to process the transaction data to get the information related to whether the offer availed was viewed or not. We would also make features like amount of transaction done in past week/2weeks, no. of time transaction done etc. The transactional data is available only for month and not sure how much information we will be able to extract out of this. 
+5.	We will build a classification model to predict whether the customer belongs to category “no offer to be given” or category “offer to be given”. Also in order to do the prediction, we will use transaction data of at least 1 week back. The reason to set up the problem in this way is so that can we get some insights based on the transactional data of the customer along with demographic data to predict that given customer does a transaction, whether it would be because of the offer or he would anyways make the transaction. This will help us identify the customers to whom offer should be given. And since we are using transaction data of at least one week back, we can appropriately tag whether to give offer to the customers for the next week. 
 
-Based on the transcript records, we build an user-item-matrix that represents how users responded to the offers they received. We then split the records into the training set and the test set and trained our SVD algorithm to predict how a user responses to a particular offer. We achieved the lowest mean square error around 0.003823 with 15 latent features with the training set and around 0.009175 with 10 latent features with the testing set. After that, we created a recommendation engine that recommends Starbucks which offer should be sent to a particular user.
+## Benchmark Model<a name="benchmark"></a>
+- 
 
-In the later section, we found out which demographic groups respond best to which offer type. Female respond much better than men, in both BOGO and discount. Men react slightly better to discount than BOGO. We also found that it is better to promote the offer via social media. Among the ten offers, sending buy 10 dollars get 2 dollars off within 10 days offer via email, web, mobile and social makes Starbucks gain more. It is the best offer so far!
-
-
-## Licensing, Authors, Acknowledgements<a name="licensing"></a>
-
-Must give credit to Stakbucks for the data.
-
+## Evaluation Metrics<a name="evaluation"></a>
+We will split the dataset in train and test set, and evaluate the performance of the model on test set. We will use accuracy, auc-roc and precision and recall scores to evaluate the performance of the model. Precision and recall scores are particularly important as it will give us an idea as to how many customers who deserve the offer but were not 
